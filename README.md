@@ -21,7 +21,7 @@ pip install -r requirements.txt
 To start using the EmfitAPI, you need to instantiate the class:
 
 ```python
-from emfit_api import EmfitAPI
+from emfit.api import EmfitAPI
 
 api = EmfitAPI(token="your_token_here")
 ```
