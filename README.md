@@ -6,12 +6,18 @@ EmfitAPI is a Python wrapper for the Emfit QS API. It provides methods to authen
 
 ## Installation
 
-To use the EmfitAPI wrapper, you need Python installed on your system. Clone the repository and install the required packages:
+You can install the EmfitAPI wrapper using pip:
+
+```
+pip install git+https://github.com/harperreed/emfitapi-python.git
+```
+
+Or, if you've downloaded the source:
 
 ```
 git clone https://github.com/harperreed/emfitapi-python.git
 cd emfitapi-python
-pip install -r requirements.txt
+pip install .
 ```
 
 ## Usage
@@ -65,3 +71,11 @@ EmfitAPI uses Python's logging module to log information, warnings, and errors. 
 ## Exception Handling
 
 The wrapper raises exceptions when API requests fail. Ensure to handle these exceptions in your application.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
