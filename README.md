@@ -11,28 +11,48 @@ EmfitAPI is a Python wrapper for the Emfit QS API. It provides methods to authen
 
 ## Installation
 
-You can install the EmfitAPI wrapper using pip:
+You can install the EmfitAPI wrapper using uv:
 
 ```bash
-pip install git+https://github.com/harperreed/emfitapi-python.git
+uv add emfitapi-python
 ```
 
-Or, if you've downloaded the source:
+Or from source:
 
 ```bash
 git clone https://github.com/harperreed/emfitapi-python.git
 cd emfitapi-python
-pip install .
+uv sync
 ```
 
 ### Development Installation
 
-For development, we recommend using [uv](https://docs.astral.sh/uv/):
+For development, clone the repository and install with dev dependencies:
 
 ```bash
 git clone https://github.com/harperreed/emfitapi-python.git
 cd emfitapi-python
-uv sync --all-extras
+uv sync
+```
+
+### Running Tests
+
+```bash
+uv run pytest
+```
+
+### Code Quality
+
+```bash
+# Run linting
+uv run ruff check .
+
+# Run formatting
+uv run ruff format .
+
+# Run security checks
+uv run bandit -r emfit/
+uv run safety check
 ```
 
 ## Usage
@@ -77,6 +97,19 @@ print(user_info)
 # Fetch and print device status
 device_status = api.get_device_status("device_id_here")
 print(device_status)
+```
+
+### Running the Example
+
+The repository includes an example script that demonstrates basic usage:
+
+```bash
+# Set up environment variables
+export EMFIT_USERNAME="your_username"
+export EMFIT_PASSWORD="your_password"
+
+# Run the example
+uv run example.py
 ```
 
 ## Logging
