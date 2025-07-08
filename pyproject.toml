@@ -1,6 +1,6 @@
 [project]
 name = "emfitapi-python"
-version = "0.2.2"
+version = "0.2.3"
 authors = [
     { name="Harper", email="harper@nata2.org" },
 ]
