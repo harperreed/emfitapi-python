@@ -24,11 +24,7 @@ def api_with_token():
 @pytest.fixture
 def sample_login_response():
     """Sample login response data."""
-    return {
-        "token": "sample_auth_token_456",
-        "user_id": 123,
-        "username": "testuser"
-    }
+    return {"token": "sample_auth_token_456", "user_id": 123, "username": "testuser"}
 
 
 @pytest.fixture
@@ -38,9 +34,7 @@ def sample_user_data():
         "user_id": 123,
         "username": "testuser",
         "email": "testuser@example.com",
-        "devices": [
-            {"id": "device123", "name": "Bedroom", "model": "QS"}
-        ]
+        "devices": [{"id": "device123", "name": "Bedroom", "model": "QS"}],
     }
 
 
@@ -51,7 +45,7 @@ def sample_device_status():
         "device_id": "device123",
         "status": "online",
         "last_seen": "2023-01-15T10:30:00Z",
-        "battery_level": 95
+        "battery_level": 95,
     }
 
 
@@ -65,7 +59,7 @@ def sample_presence_data():
         "end_time": "2023-01-16T06:30:00Z",
         "sleep_score": 85,
         "heart_rate_avg": 65,
-        "respiratory_rate_avg": 16
+        "respiratory_rate_avg": 16,
     }
 
 
@@ -78,8 +72,8 @@ def sample_trends_data():
         "end_date": "2023-01-31",
         "trends": [
             {"date": "2023-01-01", "sleep_score": 80},
-            {"date": "2023-01-02", "sleep_score": 85}
-        ]
+            {"date": "2023-01-02", "sleep_score": 85},
+        ],
     }
 
 
@@ -103,11 +97,6 @@ def capture_requests():
     captured_requests = []
 
     def capture_request(method, url, **kwargs):
-        captured_requests.append({
-            "method": method,
-            "url": url,
-            "kwargs": kwargs
-        })
+        captured_requests.append({"method": method, "url": url, "kwargs": kwargs})
 
     return captured_requests, capture_request
-

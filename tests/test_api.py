@@ -19,7 +19,7 @@ class TestEmfitAPIInitialization:
         """Test EmfitAPI initialization without token."""
         api = EmfitAPI()
         assert api.base_url == "https://qs-api.emfit.com/api/v1"
-        assert not hasattr(api, 'token')
+        assert not hasattr(api, "token")
         assert isinstance(api.logger, logging.Logger)
 
     def test_init_with_token(self):
@@ -55,7 +55,7 @@ class TestEmfitAPIAuthentication:
             responses.POST,
             "https://qs-api.emfit.com/api/v1/login",
             json={"token": token, "user_id": 123},
-            status=200
+            status=200,
         )
 
         api = EmfitAPI()
@@ -75,7 +75,7 @@ class TestEmfitAPIAuthentication:
             responses.POST,
             "https://qs-api.emfit.com/api/v1/login",
             json={"error": "Invalid credentials"},
-            status=401
+            status=401,
         )
 
         api = EmfitAPI()
@@ -83,7 +83,7 @@ class TestEmfitAPIAuthentication:
             api.login(username, password)
 
         assert "Login failed with status code 401" in str(exc_info.value)
-        assert not hasattr(api, 'token')
+        assert not hasattr(api, "token")
 
     @responses.activate
     def test_token_persistence(self):
@@ -96,7 +96,7 @@ class TestEmfitAPIAuthentication:
             responses.POST,
             "https://qs-api.emfit.com/api/v1/login",
             json={"token": token},
-            status=200
+            status=200,
         )
 
         api = EmfitAPI()
@@ -117,18 +117,15 @@ class TestEmfitAPIRequestHandling:
         test_url = "https://qs-api.emfit.com/api/v1/test"
         response_data = {"data": "test_response"}
 
-        responses.add(
-            responses.GET,
-            test_url,
-            json=response_data,
-            status=200
-        )
+        responses.add(responses.GET, test_url, json=response_data, status=200)
 
         result = api.handle_request(test_url)
 
         assert result == response_data
         assert len(responses.calls) == 1
-        assert responses.calls[0].request.headers["Authorization"] == "Bearer test_token"
+        assert (
+            responses.calls[0].request.headers["Authorization"] == "Bearer test_token"
+        )
 
     @responses.activate
     def test_handle_request_error(self):
@@ -136,12 +133,7 @@ class TestEmfitAPIRequestHandling:
         api = EmfitAPI(token="test_token")
         test_url = "https://qs-api.emfit.com/api/v1/test"
 
-        responses.add(
-            responses.GET,
-            test_url,
-            json={"error": "Not found"},
-            status=404
-        )
+        responses.add(responses.GET, test_url, json={"error": "Not found"}, status=404)
 
         with pytest.raises(Exception) as exc_info:
             api.handle_request(test_url)
@@ -154,12 +146,7 @@ class TestEmfitAPIRequestHandling:
         api = EmfitAPI(token="test_token")
         test_url = "https://qs-api.emfit.com/api/v1/test"
 
-        responses.add(
-            responses.GET,
-            test_url,
-            body="invalid json",
-            status=200
-        )
+        responses.add(responses.GET, test_url, body="invalid json", status=200)
 
         with pytest.raises(json.JSONDecodeError):
             api.handle_request(test_url)
@@ -171,18 +158,15 @@ class TestEmfitAPIRequestHandling:
         test_url = "https://qs-api.emfit.com/api/v1/test"
         response_data = {"success": True}
 
-        responses.add(
-            responses.POST,
-            test_url,
-            json=response_data,
-            status=200
-        )
+        responses.add(responses.POST, test_url, json=response_data, status=200)
 
         result = api.handle_request(test_url, method="post", data={"key": "value"})
 
         assert result == response_data
         assert len(responses.calls) == 1
-        assert responses.calls[0].request.headers["Authorization"] == "Bearer test_token"
+        assert (
+            responses.calls[0].request.headers["Authorization"] == "Bearer test_token"
+        )
 
 
 class TestEmfitAPIEndpoints:
@@ -201,7 +185,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             "https://qs-api.emfit.com/api/v1/user/get",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_user()
@@ -216,7 +200,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/device/status/{device_id}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_device_status(device_id)
@@ -231,7 +215,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/device/{device_id}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_device_info(device_id)
@@ -246,7 +230,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/presence/{device_id}/latest",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_latest_presence(device_id)
@@ -262,7 +246,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/presence/{device_id}/{presence_id}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_presence(device_id, presence_id)
@@ -279,7 +263,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/trends/{device_id}/{start_date}/{end_date}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_trends(device_id, start_date, end_date)
@@ -296,7 +280,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/timeline/{device_id}/{start_date}/{end_date}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_timeline(device_id, start_date, end_date)
@@ -311,7 +295,7 @@ class TestEmfitAPIEndpoints:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/device/notification-settings/{device_id}",
             json=response_data,
-            status=200
+            status=200,
         )
 
         result = api.get_notification_settings(device_id)
@@ -325,7 +309,7 @@ class TestEmfitAPIEdgeCases:
         """Test behavior with empty token."""
         api = EmfitAPI()
         # Should not have token attribute
-        assert not hasattr(api, 'token')
+        assert not hasattr(api, "token")
 
     def test_handle_request_without_token(self):
         """Test request handling without token."""
@@ -343,7 +327,7 @@ class TestEmfitAPIEdgeCases:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/device/status/{device_id}",
             json={"error": "Device not found"},
-            status=404
+            status=404,
         )
 
         with pytest.raises(Exception) as exc_info:
@@ -359,7 +343,7 @@ class TestEmfitAPIEdgeCases:
         responses.add(
             responses.GET,
             "https://qs-api.emfit.com/api/v1/user/get",
-            body=requests.exceptions.ConnectionError("Network error")
+            body=requests.exceptions.ConnectionError("Network error"),
         )
 
         with pytest.raises(requests.exceptions.ConnectionError):
@@ -373,7 +357,7 @@ class TestEmfitAPIEdgeCases:
         responses.add(
             responses.GET,
             "https://qs-api.emfit.com/api/v1/user/get",
-            body=requests.exceptions.Timeout("Request timed out")
+            body=requests.exceptions.Timeout("Request timed out"),
         )
 
         with pytest.raises(requests.exceptions.Timeout):
@@ -391,7 +375,7 @@ class TestEmfitAPIURLConstruction:
     def test_login_url_construction(self, api):
         """Test login URL construction."""
         expected_url = "https://qs-api.emfit.com/api/v1/login"
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 200
             mock_post.return_value.json.return_value = {"token": "test"}
             try:
@@ -405,7 +389,7 @@ class TestEmfitAPIURLConstruction:
     def test_user_url_construction(self, api):
         """Test user endpoint URL construction."""
         expected_url = "https://qs-api.emfit.com/api/v1/user/get"
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             api.get_user()
             mock_handle.assert_called_once_with(expected_url)
 
@@ -413,7 +397,7 @@ class TestEmfitAPIURLConstruction:
         """Test device status URL construction."""
         device_id = "device123"
         expected_url = f"https://qs-api.emfit.com/api/v1/device/status/{device_id}"
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             api.get_device_status(device_id)
             mock_handle.assert_called_once_with(expected_url)
 
@@ -421,7 +405,7 @@ class TestEmfitAPIURLConstruction:
         """Test URL construction with special characters."""
         device_id = "device-123_test"
         expected_url = f"https://qs-api.emfit.com/api/v1/device/status/{device_id}"
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             api.get_device_status(device_id)
             mock_handle.assert_called_once_with(expected_url)
 
@@ -436,19 +420,23 @@ class TestEmfitAPIParameterValidation:
 
     def test_device_id_parameter_types(self, api):
         """Test device_id parameter with different types."""
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             # String device ID (normal case)
             api.get_device_status("device123")
-            mock_handle.assert_called_with("https://qs-api.emfit.com/api/v1/device/status/device123")
+            mock_handle.assert_called_with(
+                "https://qs-api.emfit.com/api/v1/device/status/device123"
+            )
 
             # Numeric device ID
             api.get_device_status(123)
-            mock_handle.assert_called_with("https://qs-api.emfit.com/api/v1/device/status/123")
+            mock_handle.assert_called_with(
+                "https://qs-api.emfit.com/api/v1/device/status/123"
+            )
 
     def test_date_parameter_types(self, api):
         """Test date parameters with different formats."""
         device_id = "device123"
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             # String dates
             api.get_trends(device_id, "2023-01-01", "2023-01-31")
             expected_url = f"https://qs-api.emfit.com/api/v1/trends/{device_id}/2023-01-01/2023-01-31"
@@ -456,10 +444,12 @@ class TestEmfitAPIParameterValidation:
 
     def test_kwargs_parameter_passing(self, api):
         """Test that kwargs are passed correctly to handle_request."""
-        with patch.object(api, 'handle_request') as mock_handle:
+        with patch.object(api, "handle_request") as mock_handle:
             test_kwargs = {"param1": "value1", "param2": "value2"}
             api.get_user(**test_kwargs)
-            mock_handle.assert_called_with("https://qs-api.emfit.com/api/v1/user/get", **test_kwargs)
+            mock_handle.assert_called_with(
+                "https://qs-api.emfit.com/api/v1/user/get", **test_kwargs
+            )
 
 
 class TestEmfitAPILogging:
@@ -472,7 +462,7 @@ class TestEmfitAPILogging:
 
     def test_login_logging(self, api, caplog):
         """Test logging during login."""
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 200
             mock_post.return_value.json.return_value = {"token": "test"}
 
@@ -484,7 +474,7 @@ class TestEmfitAPILogging:
 
     def test_login_error_logging(self, api, caplog):
         """Test error logging during failed login."""
-        with patch('requests.post') as mock_post:
+        with patch("requests.post") as mock_post:
             mock_post.return_value.status_code = 401
 
             with caplog.at_level(logging.ERROR):
@@ -498,7 +488,7 @@ class TestEmfitAPILogging:
     def test_request_logging(self, api, caplog):
         """Test logging during requests."""
         test_url = "https://qs-api.emfit.com/api/v1/test"
-        with patch('requests.request') as mock_request:
+        with patch("requests.request") as mock_request:
             mock_request.return_value.status_code = 200
             mock_request.return_value.json.return_value = {"data": "test"}
 
@@ -506,12 +496,14 @@ class TestEmfitAPILogging:
                 api.handle_request(test_url)
 
             assert f"Sending GET request to {test_url}" in caplog.text
-            assert f"Request to {test_url} succeeded with status code 200" in caplog.text
+            assert (
+                f"Request to {test_url} succeeded with status code 200" in caplog.text
+            )
 
     def test_request_error_logging(self, api, caplog):
         """Test error logging during failed requests."""
         test_url = "https://qs-api.emfit.com/api/v1/test"
-        with patch('requests.request') as mock_request:
+        with patch("requests.request") as mock_request:
             mock_request.return_value.status_code = 404
 
             with caplog.at_level(logging.ERROR):
@@ -539,7 +531,7 @@ class TestEmfitAPIIntegration:
             responses.POST,
             "https://qs-api.emfit.com/api/v1/login",
             json={"token": token, "user_id": 123},
-            status=200
+            status=200,
         )
 
         # Mock user data
@@ -547,7 +539,7 @@ class TestEmfitAPIIntegration:
             responses.GET,
             "https://qs-api.emfit.com/api/v1/user/get",
             json={"user_id": 123, "devices": [{"id": device_id}]},
-            status=200
+            status=200,
         )
 
         # Mock device status
@@ -555,7 +547,7 @@ class TestEmfitAPIIntegration:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/device/status/{device_id}",
             json={"device_id": device_id, "status": "online"},
-            status=200
+            status=200,
         )
 
         # Mock latest presence
@@ -563,7 +555,7 @@ class TestEmfitAPIIntegration:
             responses.GET,
             f"https://qs-api.emfit.com/api/v1/presence/{device_id}/latest",
             json={"device_id": device_id, "presence": "in_bed"},
-            status=200
+            status=200,
         )
 
         # Execute complete workflow
@@ -612,4 +604,3 @@ class TestEmfitAPIIntegration:
         # Test user data retrieval
         user_data = api.get_user()
         assert "user_id" in user_data or "id" in user_data
-

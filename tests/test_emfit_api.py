@@ -24,7 +24,7 @@ class TestEmfitAPI:
         """Test EmfitAPI initialization without token."""
         api = EmfitAPI()
         assert api.base_url == self.base_url
-        assert not hasattr(api, 'token')
+        assert not hasattr(api, "token")
         assert isinstance(api.logger, logging.Logger)
 
     def test_init_with_token(self):
@@ -40,18 +40,11 @@ class TestEmfitAPI:
         login_response = {
             "token": self.test_token,
             "remember_token": "remember_123",
-            "user": {
-                "id": 123,
-                "username": "testuser",
-                "email": "test@example.com"
-            }
+            "user": {"id": 123, "username": "testuser", "email": "test@example.com"},
         }
 
         responses.add(
-            responses.POST,
-            f"{self.base_url}/login",
-            json=login_response,
-            status=200
+            responses.POST, f"{self.base_url}/login", json=login_response, status=200
         )
 
         result = self.api.login("testuser", "testpass")
@@ -68,14 +61,14 @@ class TestEmfitAPI:
             responses.POST,
             f"{self.base_url}/login",
             json={"error": "Invalid credentials"},
-            status=401
+            status=401,
         )
 
         with pytest.raises(Exception) as exc_info:
             self.api.login("testuser", "wrongpass")
 
         assert "Login failed with status code 401" in str(exc_info.value)
-        assert not hasattr(self.api, 'token')
+        assert not hasattr(self.api, "token")
 
     @responses.activate
     def test_handle_request_success(self):
@@ -84,17 +77,17 @@ class TestEmfitAPI:
         test_response = {"data": "test_data"}
 
         responses.add(
-            responses.GET,
-            f"{self.base_url}/test",
-            json=test_response,
-            status=200
+            responses.GET, f"{self.base_url}/test", json=test_response, status=200
         )
 
         result = self.api.handle_request(f"{self.base_url}/test")
 
         assert result == test_response
         assert len(responses.calls) == 1
-        assert responses.calls[0].request.headers["Authorization"] == f"Bearer {self.test_token}"
+        assert (
+            responses.calls[0].request.headers["Authorization"]
+            == f"Bearer {self.test_token}"
+        )
 
     @responses.activate
     def test_handle_request_failure(self):
@@ -105,7 +98,7 @@ class TestEmfitAPI:
             responses.GET,
             f"{self.base_url}/test",
             json={"error": "Not found"},
-            status=404
+            status=404,
         )
 
         with pytest.raises(Exception) as exc_info:
@@ -119,10 +112,7 @@ class TestEmfitAPI:
         self.api.token = self.test_token
 
         responses.add(
-            responses.GET,
-            f"{self.base_url}/test",
-            body="invalid json",
-            status=200
+            responses.GET, f"{self.base_url}/test", body="invalid json", status=200
         )
 
         with pytest.raises(ValueError):
@@ -133,18 +123,11 @@ class TestEmfitAPI:
         """Test get_user method."""
         self.api.token = self.test_token
         user_response = {
-            "user": {
-                "id": 123,
-                "username": "testuser",
-                "email": "test@example.com"
-            }
+            "user": {"id": 123, "username": "testuser", "email": "test@example.com"}
         }
 
         responses.add(
-            responses.GET,
-            f"{self.base_url}/user/get",
-            json=user_response,
-            status=200
+            responses.GET, f"{self.base_url}/user/get", json=user_response, status=200
         )
 
         result = self.api.get_user()
@@ -159,14 +142,14 @@ class TestEmfitAPI:
         status_response = {
             "device_index": self.test_device_id,
             "description": "present",
-            "from": 1730813827000
+            "from": 1730813827000,
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/status/{self.test_device_id}",
             json=status_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_device_status(self.test_device_id)
@@ -181,14 +164,14 @@ class TestEmfitAPI:
         device_response = {
             "device_name": "Test Device",
             "firmware": "120.2.2.1",
-            "field1": "left side"
+            "field1": "left side",
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/{self.test_device_id}",
             json=device_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_device_info(self.test_device_id)
@@ -206,14 +189,14 @@ class TestEmfitAPI:
             "sleep_duration": 27240,
             "sleep_efficiency": 83,
             "from_utc": "2024-11-05 04:22:00",
-            "to_utc": "2024-11-05 13:37:00"
+            "to_utc": "2024-11-05 13:37:00",
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/presence/{self.test_device_id}/latest",
             json=presence_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_latest_presence(self.test_device_id)
@@ -230,14 +213,14 @@ class TestEmfitAPI:
             "id": presence_id,
             "device_id": self.test_device_id,
             "sleep_duration": 27240,
-            "sleep_efficiency": 83
+            "sleep_efficiency": 83,
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/presence/{self.test_device_id}/{presence_id}",
             json=presence_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_presence(self.test_device_id, presence_id)
@@ -254,7 +237,7 @@ class TestEmfitAPI:
         trends_response = {
             "trends": [
                 {"date": "2024-01-01", "sleep_score": 85},
-                {"date": "2024-01-02", "sleep_score": 90}
+                {"date": "2024-01-02", "sleep_score": 90},
             ]
         }
 
@@ -262,7 +245,7 @@ class TestEmfitAPI:
             responses.GET,
             f"{self.base_url}/trends/{self.test_device_id}/{start_date}/{end_date}",
             json=trends_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_trends(self.test_device_id, start_date, end_date)
@@ -279,7 +262,7 @@ class TestEmfitAPI:
         timeline_response = {
             "timeline": [
                 {"timestamp": 1704067200, "event": "sleep_start"},
-                {"timestamp": 1704096000, "event": "sleep_end"}
+                {"timestamp": 1704096000, "event": "sleep_end"},
             ]
         }
 
@@ -287,7 +270,7 @@ class TestEmfitAPI:
             responses.GET,
             f"{self.base_url}/timeline/{self.test_device_id}/{start_date}/{end_date}",
             json=timeline_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_timeline(self.test_device_id, start_date, end_date)
@@ -303,14 +286,14 @@ class TestEmfitAPI:
             "device_id": self.test_device_id,
             "sms_alert": False,
             "email_alert": True,
-            "alarm_profile": "gentle"
+            "alarm_profile": "gentle",
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/notification-settings/{self.test_device_id}",
             json=notification_response,
-            status=200
+            status=200,
         )
 
         result = self.api.get_notification_settings(self.test_device_id)
@@ -322,7 +305,7 @@ class TestEmfitAPI:
         """Test that all API methods use the handle_request method."""
         self.api.token = self.test_token
 
-        with patch.object(self.api, 'handle_request') as mock_handle:
+        with patch.object(self.api, "handle_request") as mock_handle:
             mock_handle.return_value = {"test": "data"}
 
             # Test all methods that should use handle_request
@@ -332,8 +315,14 @@ class TestEmfitAPI:
                 (self.api.get_device_info, [self.test_device_id]),
                 (self.api.get_latest_presence, [self.test_device_id]),
                 (self.api.get_presence, [self.test_device_id, "presence_id"]),
-                (self.api.get_trends, [self.test_device_id, "2024-01-01", "2024-01-31"]),
-                (self.api.get_timeline, [self.test_device_id, "2024-01-01", "2024-01-31"]),
+                (
+                    self.api.get_trends,
+                    [self.test_device_id, "2024-01-01", "2024-01-31"],
+                ),
+                (
+                    self.api.get_timeline,
+                    [self.test_device_id, "2024-01-01", "2024-01-31"],
+                ),
                 (self.api.get_notification_settings, [self.test_device_id]),
             ]
 
@@ -349,4 +338,3 @@ class TestEmfitAPI:
         api = EmfitAPI()
         assert api.logger.name == "emfit.api"
         assert isinstance(api.logger, logging.Logger)
-

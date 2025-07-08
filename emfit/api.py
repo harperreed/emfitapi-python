@@ -1,5 +1,7 @@
-import requests
 import logging
+
+import requests
+
 
 class EmfitAPI:
     def __init__(self, token=None):
@@ -27,15 +29,16 @@ class EmfitAPI:
         self.logger.info(f"Attempting to login user: {username}")
         response = requests.post(url, data=data)
         if response.status_code != 200:
-            self.logger.error(f"Login failed with status code {response.status_code} for user: {username}")
+            self.logger.error(
+                f"Login failed with status code {response.status_code} for user: {username}"
+            )
             raise Exception(f"Login failed with status code {response.status_code}")
         json_response = response.json()
         self.token = json_response["token"]
         self.logger.info(f"User {username} logged in successfully.")
         return json_response
 
-
-    def handle_request(self, url, method='get', **kwargs):
+    def handle_request(self, url, method="get", **kwargs):
         """
         Sends a request to the specified URL with the necessary authorization headers.
 
@@ -54,14 +57,18 @@ class EmfitAPI:
         self.logger.info(f"Sending {method.upper()} request to {url}")
         response = requests.request(method, url, headers=headers, **kwargs)
         if response.status_code != 200:
-            self.logger.error(f"Request to {url} failed with status code {response.status_code}")
+            self.logger.error(
+                f"Request to {url} failed with status code {response.status_code}"
+            )
             raise Exception(f"Request failed with status code {response.status_code}")
         try:
             json_response = response.json()
         except ValueError as e:
             self.logger.error(f"Failed to parse JSON response for {url}: {e}")
             raise
-        self.logger.info(f"Request to {url} succeeded with status code {response.status_code}")
+        self.logger.info(
+            f"Request to {url} succeeded with status code {response.status_code}"
+        )
         return json_response
 
     def get_user(self, **kwargs):
@@ -92,9 +99,13 @@ class EmfitAPI:
             dict: A JSON response containing the device status information.
         """
         url = self.base_url + f"/device/status/{device_id}"
-        self.logger.info(f"Retrieving device status for device ID: {device_id} from {url}")
+        self.logger.info(
+            f"Retrieving device status for device ID: {device_id} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Device status for device ID: {device_id} retrieved successfully.")
+        self.logger.debug(
+            f"Device status for device ID: {device_id} retrieved successfully."
+        )
         return response
 
     def get_device_info(self, device_id, **kwargs):
@@ -109,9 +120,13 @@ class EmfitAPI:
             dict: A JSON response containing the device information.
         """
         url = self.base_url + f"/device/{device_id}"
-        self.logger.info(f"Retrieving device information for device ID: {device_id} from {url}")
+        self.logger.info(
+            f"Retrieving device information for device ID: {device_id} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Device information for device ID: {device_id} retrieved successfully.")
+        self.logger.debug(
+            f"Device information for device ID: {device_id} retrieved successfully."
+        )
         return response
 
     def get_latest_presence(self, device_id, **kwargs):
@@ -126,9 +141,13 @@ class EmfitAPI:
             dict: A JSON response containing the latest presence information.
         """
         url = self.base_url + f"/presence/{device_id}/latest"
-        self.logger.info(f"Retrieving latest presence information for device ID: {device_id} from {url}")
+        self.logger.info(
+            f"Retrieving latest presence information for device ID: {device_id} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Latest presence information for device ID: {device_id} retrieved successfully.")
+        self.logger.debug(
+            f"Latest presence information for device ID: {device_id} retrieved successfully."
+        )
         return response
 
     def get_presence(self, device_id, presence_id, **kwargs):
@@ -144,9 +163,13 @@ class EmfitAPI:
             dict: A JSON response containing the presence information.
         """
         url = self.base_url + f"/presence/{device_id}/{presence_id}"
-        self.logger.info(f"Retrieving presence information for device ID: {device_id} and presence ID: {presence_id} from {url}")
+        self.logger.info(
+            f"Retrieving presence information for device ID: {device_id} and presence ID: {presence_id} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Presence information for device ID: {device_id} and presence ID: {presence_id} retrieved successfully.")
+        self.logger.debug(
+            f"Presence information for device ID: {device_id} and presence ID: {presence_id} retrieved successfully."
+        )
         return response
 
     def get_trends(self, device_id, start_date, end_date, **kwargs):
@@ -163,9 +186,13 @@ class EmfitAPI:
             dict: A JSON response containing the trends data.
         """
         url = self.base_url + f"/trends/{device_id}/{start_date}/{end_date}"
-        self.logger.info(f"Retrieving trends data for device ID: {device_id} from {start_date} to {end_date} from {url}")
+        self.logger.info(
+            f"Retrieving trends data for device ID: {device_id} from {start_date} to {end_date} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Trends data for device ID: {device_id} from {start_date} to {end_date} retrieved successfully.")
+        self.logger.debug(
+            f"Trends data for device ID: {device_id} from {start_date} to {end_date} retrieved successfully."
+        )
         return response
 
     def get_timeline(self, device_id, start_date, end_date, **kwargs):
@@ -182,9 +209,13 @@ class EmfitAPI:
             dict: A JSON response containing the timeline data.
         """
         url = self.base_url + f"/timeline/{device_id}/{start_date}/{end_date}"
-        self.logger.info(f"Retrieving timeline data for device ID: {device_id} from {start_date} to {end_date} from {url}")
+        self.logger.info(
+            f"Retrieving timeline data for device ID: {device_id} from {start_date} to {end_date} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Timeline data for device ID: {device_id} from {start_date} to {end_date} retrieved successfully.")
+        self.logger.debug(
+            f"Timeline data for device ID: {device_id} from {start_date} to {end_date} retrieved successfully."
+        )
         return response
 
     def get_notification_settings(self, device_id, **kwargs):
@@ -199,7 +230,11 @@ class EmfitAPI:
             dict: A JSON response containing the notification settings.
         """
         url = self.base_url + f"/device/notification-settings/{device_id}"
-        self.logger.info(f"Retrieving notification settings for device ID: {device_id} from {url}")
+        self.logger.info(
+            f"Retrieving notification settings for device ID: {device_id} from {url}"
+        )
         response = self.handle_request(url, **kwargs)
-        self.logger.debug(f"Notification settings for device ID: {device_id} retrieved successfully.")
+        self.logger.debug(
+            f"Notification settings for device ID: {device_id} retrieved successfully."
+        )
         return response

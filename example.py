@@ -1,6 +1,8 @@
-import os
-from dotenv import load_dotenv
 import logging
+import os
+
+from dotenv import load_dotenv
+
 from emfit.api import EmfitAPI
 
 # Load environment variables
@@ -9,6 +11,7 @@ load_dotenv()
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def main():
     """
@@ -42,15 +45,18 @@ def main():
     logger.info(f"Device Status: {device_status['description']}")
 
     device_latest_presence = api.get_latest_presence(device_id)
-    sleep_hours = device_latest_presence['sleep_duration'] / 3600
+    sleep_hours = device_latest_presence["sleep_duration"] / 3600
     logger.info(f"Device Latest Sleep Duration: {sleep_hours} hours")
 
-    period_id = device_latest_presence['navigation_data'][-1]['id']
+    period_id = device_latest_presence["navigation_data"][-1]["id"]
     logger.debug(f"Period ID: {period_id}")
 
     sleep_data = api.get_presence(device_id, period_id)
-    sleep_data_hours = sleep_data['sleep_duration'] / 3600
-    logger.info(f"Sleep Data for {sleep_data['from_utc']} to {sleep_data['to_utc']} UTC: {sleep_data_hours} hours")
+    sleep_data_hours = sleep_data["sleep_duration"] / 3600
+    logger.info(
+        f"Sleep Data for {sleep_data['from_utc']} to {sleep_data['to_utc']} UTC: {sleep_data_hours} hours"
+    )
+
 
 if __name__ == "__main__":
     main()

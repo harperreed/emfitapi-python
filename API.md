@@ -12,8 +12,8 @@ https://qs-api.emfit.com/api/v1
 
 Authenticate with the API to receive a bearer token.
 
-**Endpoint:** `/login`  
-**Method:** POST  
+**Endpoint:** `/login`
+**Method:** POST
 **Request Body:**
 
 ```json
@@ -58,8 +58,8 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
 
 Retrieve information about the authenticated user.
 
-**Endpoint:** `/user/get`  
-**Method:** GET  
+**Endpoint:** `/user/get`
+**Method:** GET
 **Response:**
 
 ```json
@@ -107,8 +107,8 @@ Retrieve information about the authenticated user.
 
 Retrieve information about a specific device.
 
-**Endpoint:** `/device/{device_id}`  
-**Method:** GET  
+**Endpoint:** `/device/{device_id}`
+**Method:** GET
 **Response:**
 
 ```json
@@ -124,8 +124,8 @@ Retrieve information about a specific device.
 
 Get the current status of a specific device.
 
-**Endpoint:** `/device/status/{device_id}`  
-**Method:** GET  
+**Endpoint:** `/device/status/{device_id}`
+**Method:** GET
 **Response:**
 
 ```json
@@ -140,8 +140,8 @@ Get the current status of a specific device.
 
 Retrieve notification settings for a specific device.
 
-**Endpoint:** `/device/notification-settings/{device_id}`  
-**Method:** GET  
+**Endpoint:** `/device/notification-settings/{device_id}`
+**Method:** GET
 **Response:**
 
 ```json
@@ -162,8 +162,8 @@ Retrieve notification settings for a specific device.
 
 Retrieve the most recent presence data for a device.
 
-**Endpoint:** `/presence/{device_id}/latest`  
-**Method:** GET  
+**Endpoint:** `/presence/{device_id}/latest`
+**Method:** GET
 **Response:**
 
 ```json
@@ -198,8 +198,8 @@ Retrieve the most recent presence data for a device.
 
 Retrieve presence data for a specific period.
 
-**Endpoint:** `/presence/{device_id}/{presence_id}`  
-**Method:** GET  
+**Endpoint:** `/presence/{device_id}/{presence_id}`
+**Method:** GET
 **Response:** Similar to Latest Presence response
 
 ## Trends and Timeline Endpoints
@@ -208,14 +208,14 @@ Retrieve presence data for a specific period.
 
 Retrieve trend data for a specific date range.
 
-**Endpoint:** `/trends/{device_id}/{start_date}/{end_date}`  
+**Endpoint:** `/trends/{device_id}/{start_date}/{end_date}`
 **Method:** GET
 
 ### Get Timeline
 
 Retrieve timeline data for a specific date range.
 
-**Endpoint:** `/timeline/{device_id}/{start_date}/{end_date}`  
+**Endpoint:** `/timeline/{device_id}/{start_date}/{end_date}`
 **Method:** GET
 
 ## Data Structures

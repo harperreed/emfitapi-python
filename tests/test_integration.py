@@ -30,8 +30,8 @@ class TestEmfitAPIIntegration:
                 "id": self.test_user_id,
                 "username": "testuser",
                 "email": "test@example.com",
-                "devices": f"{self.test_device_id},4470"
-            }
+                "devices": f"{self.test_device_id},4470",
+            },
         }
 
         user_response = {
@@ -40,23 +40,17 @@ class TestEmfitAPIIntegration:
                 {
                     "device_id": self.test_device_id,
                     "device_name": "Test Device",
-                    "enabled_hrv": True
+                    "enabled_hrv": True,
                 }
-            ]
+            ],
         }
 
         responses.add(
-            responses.POST,
-            f"{self.base_url}/login",
-            json=login_response,
-            status=200
+            responses.POST, f"{self.base_url}/login", json=login_response, status=200
         )
 
         responses.add(
-            responses.GET,
-            f"{self.base_url}/user/get",
-            json=user_response,
-            status=200
+            responses.GET, f"{self.base_url}/user/get", json=user_response, status=200
         )
 
         # Step 1: Login
@@ -71,7 +65,10 @@ class TestEmfitAPIIntegration:
 
         # Verify token was used in the second request
         assert len(responses.calls) == 2
-        assert responses.calls[1].request.headers["Authorization"] == f"Bearer {self.test_token}"
+        assert (
+            responses.calls[1].request.headers["Authorization"]
+            == f"Bearer {self.test_token}"
+        )
 
     @responses.activate
     def test_device_data_workflow(self):
@@ -81,13 +78,13 @@ class TestEmfitAPIIntegration:
         device_info_response = {
             "device_name": "Master Bedroom",
             "firmware": "120.2.2.1",
-            "field1": "left side"
+            "field1": "left side",
         }
 
         device_status_response = {
             "device_index": self.test_device_id,
             "description": "present",
-            "from": 1730813827000
+            "from": 1730813827000,
         }
 
         latest_presence_response = {
@@ -100,7 +97,7 @@ class TestEmfitAPIIntegration:
             "to_utc": "2024-11-05 13:37:00",
             "navigation_data": [
                 {"id": "672a1f93d41d8c004324905d", "date": "2024-11-05"}
-            ]
+            ],
         }
 
         specific_presence_response = {
@@ -109,35 +106,35 @@ class TestEmfitAPIIntegration:
             "sleep_duration": 27240,
             "sleep_efficiency": 83,
             "measured_hr_avg": 54,
-            "measured_rr_avg": 17
+            "measured_rr_avg": 17,
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/{self.test_device_id}",
             json=device_info_response,
-            status=200
+            status=200,
         )
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/status/{self.test_device_id}",
             json=device_status_response,
-            status=200
+            status=200,
         )
 
         responses.add(
             responses.GET,
             f"{self.base_url}/presence/{self.test_device_id}/latest",
             json=latest_presence_response,
-            status=200
+            status=200,
         )
 
         responses.add(
             responses.GET,
             f"{self.base_url}/presence/{self.test_device_id}/672a1f93d41d8c004324905d",
             json=specific_presence_response,
-            status=200
+            status=200,
         )
 
         # Step 1: Get device info
@@ -173,15 +170,27 @@ class TestEmfitAPIIntegration:
             "trends": [
                 {"date": "2024-01-01", "sleep_score": 85, "sleep_duration": 25200},
                 {"date": "2024-01-02", "sleep_score": 90, "sleep_duration": 27000},
-                {"date": "2024-01-03", "sleep_score": 82, "sleep_duration": 24600}
+                {"date": "2024-01-03", "sleep_score": 82, "sleep_duration": 24600},
             ]
         }
 
         timeline_response = {
             "timeline": [
-                {"timestamp": 1704067200, "event": "sleep_start", "device_id": self.test_device_id},
-                {"timestamp": 1704092400, "event": "sleep_end", "device_id": self.test_device_id},
-                {"timestamp": 1704153600, "event": "sleep_start", "device_id": self.test_device_id}
+                {
+                    "timestamp": 1704067200,
+                    "event": "sleep_start",
+                    "device_id": self.test_device_id,
+                },
+                {
+                    "timestamp": 1704092400,
+                    "event": "sleep_end",
+                    "device_id": self.test_device_id,
+                },
+                {
+                    "timestamp": 1704153600,
+                    "event": "sleep_start",
+                    "device_id": self.test_device_id,
+                },
             ]
         }
 
@@ -189,14 +198,14 @@ class TestEmfitAPIIntegration:
             responses.GET,
             f"{self.base_url}/trends/{self.test_device_id}/{start_date}/{end_date}",
             json=trends_response,
-            status=200
+            status=200,
         )
 
         responses.add(
             responses.GET,
             f"{self.base_url}/timeline/{self.test_device_id}/{start_date}/{end_date}",
             json=timeline_response,
-            status=200
+            status=200,
         )
 
         # Step 1: Get trends data
@@ -224,7 +233,7 @@ class TestEmfitAPIIntegration:
             responses.GET,
             f"{self.base_url}/user/get",
             json={"user": {"id": 123}},
-            status=200
+            status=200,
         )
 
         # Second call fails
@@ -232,7 +241,7 @@ class TestEmfitAPIIntegration:
             responses.GET,
             f"{self.base_url}/device/{self.test_device_id}",
             json={"error": "Device not found"},
-            status=404
+            status=404,
         )
 
         # First call should succeed
@@ -256,14 +265,14 @@ class TestEmfitAPIIntegration:
             "email_alert": True,
             "alarm_profile": "gentle",
             "morning_alarm": True,
-            "morning_alarm_time": "07:00"
+            "morning_alarm_time": "07:00",
         }
 
         responses.add(
             responses.GET,
             f"{self.base_url}/device/notification-settings/{self.test_device_id}",
             json=notification_response,
-            status=200
+            status=200,
         )
 
         settings = self.api.get_notification_settings(self.test_device_id)
@@ -276,7 +285,7 @@ class TestEmfitAPIIntegration:
         """Test that kwargs are properly passed through to handle_request."""
         self.api.token = self.test_token
 
-        with patch.object(self.api, 'handle_request') as mock_handle:
+        with patch.object(self.api, "handle_request") as mock_handle:
             mock_handle.return_value = {"test": "data"}
 
             # Test that custom kwargs are passed through
@@ -284,9 +293,7 @@ class TestEmfitAPIIntegration:
 
             assert result == {"test": "data"}
             mock_handle.assert_called_once_with(
-                f"{self.base_url}/user/get",
-                timeout=30,
-                allow_redirects=False
+                f"{self.base_url}/user/get", timeout=30, allow_redirects=False
             )
 
     @responses.activate
@@ -295,12 +302,7 @@ class TestEmfitAPIIntegration:
         self.api.token = self.test_token
 
         # Test empty response
-        responses.add(
-            responses.GET,
-            f"{self.base_url}/user/get",
-            json={},
-            status=200
-        )
+        responses.add(responses.GET, f"{self.base_url}/user/get", json={}, status=200)
 
         result = self.api.get_user()
         assert result == {}
@@ -313,17 +315,13 @@ class TestEmfitAPIIntegration:
                 "device": {
                     "info": {
                         "name": "Test Device",
-                        "settings": {
-                            "enabled": True,
-                            "sensitivity": "high"
-                        }
+                        "settings": {"enabled": True, "sensitivity": "high"},
                     }
                 }
             },
-            status=200
+            status=200,
         )
 
         result = self.api.get_device_info(self.test_device_id)
         assert result["device"]["info"]["name"] == "Test Device"
         assert result["device"]["info"]["settings"]["enabled"] is True
-

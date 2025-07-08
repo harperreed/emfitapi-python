@@ -37,7 +37,7 @@ class TestEmfitAPIE2E:
     @pytest.mark.e2e
     @pytest.mark.skipif(
         not os.getenv("EMFIT_USERNAME") and not os.getenv("EMFIT_TOKEN"),
-        reason="No authentication credentials provided"
+        reason="No authentication credentials provided",
     )
     def test_login_with_credentials(self):
         """Test login with real credentials."""
@@ -79,8 +79,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for device tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for device tests"
     )
     def test_get_device_info_real_api(self, authenticated_api):
         """Test getting device information from real API."""
@@ -93,8 +92,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for device tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for device tests"
     )
     def test_get_device_status_real_api(self, authenticated_api):
         """Test getting device status from real API."""
@@ -108,8 +106,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for presence tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for presence tests"
     )
     def test_get_latest_presence_real_api(self, authenticated_api):
         """Test getting latest presence data from real API."""
@@ -125,9 +122,12 @@ class TestEmfitAPIE2E:
 
         # Verify sleep metrics are present
         sleep_metrics = [
-            "sleep_efficiency", "sleep_score", "sleep_class_awake_duration",
-            "sleep_class_deep_duration", "sleep_class_light_duration",
-            "sleep_class_rem_duration"
+            "sleep_efficiency",
+            "sleep_score",
+            "sleep_class_awake_duration",
+            "sleep_class_deep_duration",
+            "sleep_class_light_duration",
+            "sleep_class_rem_duration",
         ]
 
         for metric in sleep_metrics:
@@ -136,8 +136,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for presence tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for presence tests"
     )
     def test_get_specific_presence_real_api(self, authenticated_api):
         """Test getting specific presence data from real API."""
@@ -156,8 +155,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for trends tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for trends tests"
     )
     def test_get_trends_real_api(self, authenticated_api):
         """Test getting trends data from real API."""
@@ -172,8 +170,7 @@ class TestEmfitAPIE2E:
 
     @pytest.mark.e2e
     @pytest.mark.skipif(
-        not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for timeline tests"
+        not os.getenv("EMFIT_DEVICE_ID"), reason="Device ID required for timeline tests"
     )
     def test_get_timeline_real_api(self, authenticated_api):
         """Test getting timeline data from real API."""
@@ -189,7 +186,7 @@ class TestEmfitAPIE2E:
     @pytest.mark.e2e
     @pytest.mark.skipif(
         not os.getenv("EMFIT_DEVICE_ID"),
-        reason="Device ID required for notification tests"
+        reason="Device ID required for notification tests",
     )
     def test_get_notification_settings_real_api(self, authenticated_api):
         """Test getting notification settings from real API."""
@@ -201,7 +198,10 @@ class TestEmfitAPIE2E:
 
         # Verify common notification settings
         expected_settings = [
-            "sms_alert", "email_alert", "alarm_profile", "morning_alarm"
+            "sms_alert",
+            "email_alert",
+            "alarm_profile",
+            "morning_alarm",
         ]
 
         for setting in expected_settings:
@@ -255,8 +255,12 @@ class TestEmfitAPIE2E:
             authenticated_api.get_device_status(self.device_id)
 
         # Verify logging occurred
-        assert any("Retrieving device status" in record.message for record in caplog.records)
-        assert any("succeeded with status code" in record.message for record in caplog.records)
+        assert any(
+            "Retrieving device status" in record.message for record in caplog.records
+        )
+        assert any(
+            "succeeded with status code" in record.message for record in caplog.records
+        )
 
     @pytest.mark.e2e
     def test_request_timeout_real_api(self, authenticated_api):
@@ -294,4 +298,3 @@ class TestEmfitAPIE2E:
         for result in results:
             assert isinstance(result, dict)
             assert "description" in result
-
