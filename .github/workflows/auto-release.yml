@@ -1,0 +1,107 @@
+name: Auto Release on Version Change
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pyproject.toml'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version-changed: ${{ steps.version.outputs.changed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: version
+        run: |
+          VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Check if this version tag already exists
+          if git tag -l "v$VERSION" | grep -q "v$VERSION"; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Version v$VERSION already exists"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "New version detected: v$VERSION"
+          fi
+
+  release:
+    needs: check-version
+    if: needs.check-version.outputs.version-changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Run linting
+        run: uv run ruff check .
+
+      - name: Run formatting check
+        run: uv run ruff format --check .
+
+      - name: Run security checks
+        run: |
+          uv run safety check || true
+          uv run bandit -r emfit/ || true
+
+      - name: Build package
+        run: uv build
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.check-version.outputs.version }}"
+
+          # Get commits since last release
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"* %s" HEAD)
+          else
+            COMMITS=$(git log --oneline --pretty=format:"* %s" ${LAST_TAG}..HEAD)
+          fi
+
+          # Create changelog
+          cat > changelog.md << EOF
+          ## What's Changed
+
+          $COMMITS
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${LAST_TAG}...v${VERSION}
+          EOF
+
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat changelog.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          release_name: Release v${{ needs.check-version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
