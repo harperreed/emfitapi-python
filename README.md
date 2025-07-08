@@ -1,5 +1,10 @@
 # EmfitAPI Python Wrapper
 
+[![CI](https://github.com/harperreed/emfitapi-python/workflows/CI/badge.svg)](https://github.com/harperreed/emfitapi-python/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/harperreed/emfitapi-python/branch/main/graph/badge.svg)](https://codecov.io/gh/harperreed/emfitapi-python)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Overview
 
 EmfitAPI is a Python wrapper for the Emfit QS API. It provides methods to authenticate, fetch user and device data, and retrieve various metrics such as presence, trends, and timeline data from Emfit devices.
@@ -8,16 +13,26 @@ EmfitAPI is a Python wrapper for the Emfit QS API. It provides methods to authen
 
 You can install the EmfitAPI wrapper using pip:
 
-```
+```bash
 pip install git+https://github.com/harperreed/emfitapi-python.git
 ```
 
 Or, if you've downloaded the source:
 
-```
+```bash
 git clone https://github.com/harperreed/emfitapi-python.git
 cd emfitapi-python
 pip install .
+```
+
+### Development Installation
+
+For development, we recommend using [uv](https://docs.astral.sh/uv/):
+
+```bash
+git clone https://github.com/harperreed/emfitapi-python.git
+cd emfitapi-python
+uv sync --all-extras
 ```
 
 ## Usage
